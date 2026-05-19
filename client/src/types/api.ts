@@ -4,6 +4,15 @@ export interface ApiResponse<TData> {
   data: TData
 }
 
+export interface ApiErrorResponse {
+  success: false
+  message: string
+  errors?: Array<{
+    field: string
+    message: string
+  }>
+}
+
 export interface PaginationMeta {
   page: number
   limit: number
@@ -16,4 +25,3 @@ export interface PaginationMeta {
 export interface PaginatedApiResponse<TData> extends ApiResponse<TData[]> {
   pagination: PaginationMeta
 }
-
