@@ -20,3 +20,9 @@ export interface LeadFilters {
   page: number
 }
 
+export interface LeadFormValues {
+  name: string
+  email: string
+  status: LeadStatus
+  source: LeadSource
+}
