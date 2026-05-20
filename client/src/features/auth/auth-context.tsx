@@ -1,7 +1,5 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -10,19 +8,7 @@ import {
 
 import { meRequest } from '../../api/auth-api'
 import type { AuthPayload, AuthUser } from '../../types/auth'
-
-const TOKEN_KEY = 'smart-leads-token'
-
-interface AuthContextValue {
-  user: AuthUser | null
-  token: string | null
-  isAuthenticated: boolean
-  isAuthLoading: boolean
-  setAuth: (payload: AuthPayload) => void
-  logout: () => void
-}
-
-const AuthContext = createContext<AuthContextValue | undefined>(undefined)
+import { AuthContext, TOKEN_KEY, type AuthContextValue } from './auth-context-value'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY))
@@ -43,13 +29,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!token) {
-      setIsAuthLoading(false)
       return
     }
 
     let isMounted = true
 
-    setIsAuthLoading(true)
     meRequest()
       .then((currentUser) => {
         if (isMounted) {
@@ -86,14 +70,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
-  }
-
-  return context
-}
-

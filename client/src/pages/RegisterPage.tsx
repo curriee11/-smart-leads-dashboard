@@ -8,8 +8,8 @@ import { registerRequest } from '../api/auth-api'
 import { Button } from '../components/Button'
 import { FormField } from '../components/FormField'
 import { SelectField } from '../components/SelectField'
-import { useAuth } from '../features/auth/auth-context'
 import { registerFormSchema, type RegisterFormValues } from '../features/auth/auth-schemas'
+import { useAuth } from '../features/auth/use-auth'
 import { getApiErrorMessage } from '../hooks/use-api-error'
 
 export function RegisterPage() {
@@ -98,4 +98,3 @@ export function RegisterPage() {
     </main>
   )
 }
-

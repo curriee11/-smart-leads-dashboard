@@ -8,7 +8,7 @@ import { loginRequest } from '../api/auth-api'
 import { Button } from '../components/Button'
 import { FormField } from '../components/FormField'
 import { loginFormSchema, type LoginFormValues } from '../features/auth/auth-schemas'
-import { useAuth } from '../features/auth/auth-context'
+import { useAuth } from '../features/auth/use-auth'
 import { getApiErrorMessage } from '../hooks/use-api-error'
 
 export function LoginPage() {
@@ -85,4 +85,3 @@ export function LoginPage() {
     </main>
   )
 }
-

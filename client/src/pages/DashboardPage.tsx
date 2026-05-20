@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AlertCircle, LogOut, Plus } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Button } from '../components/Button'
 import {
@@ -10,7 +10,7 @@ import {
   listLeadsRequest,
   updateLeadRequest,
 } from '../api/lead-api'
-import { useAuth } from '../features/auth/auth-context'
+import { useAuth } from '../features/auth/use-auth'
 import { LeadFilters } from '../features/leads/LeadFilters'
 import { LeadForm } from '../features/leads/LeadForm'
 import { LeadTable } from '../features/leads/LeadTable'
@@ -32,15 +32,13 @@ export function DashboardPage() {
   const debouncedSearch = useDebounce(searchValue, 450)
   const canDelete = user?.role === 'admin'
 
-  useEffect(() => {
-    setFilters((currentFilters) => ({
-      ...currentFilters,
+  const queryFilters = useMemo(
+    () => ({
+      ...filters,
       search: debouncedSearch,
-      page: 1,
-    }))
-  }, [debouncedSearch])
-
-  const queryFilters = useMemo(() => filters, [filters])
+    }),
+    [debouncedSearch, filters],
+  )
 
   const leadsQuery = useQuery({
     queryKey: ['leads', queryFilters],
@@ -107,7 +105,7 @@ export function DashboardPage() {
 
   const handleExport = () => {
     const token = localStorage.getItem('smart-leads-token')
-    const exportUrl = getLeadsExportUrl(filters)
+    const exportUrl = getLeadsExportUrl(queryFilters)
 
     fetch(exportUrl, {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
@@ -176,7 +174,10 @@ export function DashboardPage() {
           filters={filters}
           searchValue={searchValue}
           onFilterChange={handleFilterChange}
-          onSearchChange={setSearchValue}
+          onSearchChange={(value) => {
+            setSearchValue(value)
+            setFilters((currentFilters) => ({ ...currentFilters, page: 1 }))
+          }}
           onExport={handleExport}
         />
 
